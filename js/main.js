@@ -4,6 +4,8 @@
 
 (() => {
     // ※ 전역을 오염시키지 않으려는 의도로 IIFE를 사용한다.
+    let yOffset = 0; // window.pageYOffset 대신 쓸 변수
+
     const sceneInfo = [
         // 스크롤 섹션별 객체를 만듦.
         {
@@ -52,13 +54,20 @@
         // 각 스크롤 섹션의 높이 세팅하기
         for (let i = 0; i < sceneInfo.length; i++) {
             sceneInfo[i].scrollHeight = sceneInfo[i].heightNum * window.innerHeight;
+
             sceneInfo[i].objs.container.style.height = `${sceneInfo[i].scrollHeight}px`;
         }
 
         console.log(sceneInfo);
     }
 
-    setLayout();
+    function scrollLoop() {}
 
     window.addEventListener('resize', setLayout);
+    window.addEventListener('scroll', () => {
+        yOffset = window.pageYOffset;
+        scrollLoop();
+    });
+
+    setLayout();
 })();
