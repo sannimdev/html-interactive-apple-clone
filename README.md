@@ -2,6 +2,8 @@
 
 홈페이지가 OOH-AHH(우아)해지는 방법
 
+![](https://cdn.inflearn.com/public/course-325248-cover/4495e5a6-8aaf-4567-aa77-c8a435fd8df8/apple-clone-animation-2-min.gif)
+
 ## ✔ 강의 선택 동기
 
 - [애플 에어팟 인터랙션](https://www.apple.com/kr/airpods-pro)
