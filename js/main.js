@@ -5,6 +5,8 @@
 (() => {
     // ※ 전역을 오염시키지 않으려는 의도로 IIFE를 사용한다.
     let yOffset = 0; // window.pageYOffset 대신 쓸 변수
+    let prevScrollHeight = 0; // 현재 스크롤 위치(yOffset)보다 위쪽에 있는 스크롤 섹션들의 높잇값의 합
+    let currentScene = 0; // 현재 활성화된 (눈 앞에 보이는) 씬(scroll-section)
 
     const sceneInfo = [
         // 스크롤 섹션별 객체를 만듦.
@@ -61,7 +63,25 @@
         console.log(sceneInfo);
     }
 
-    function scrollLoop() {}
+    function scrollLoop() {
+        prevScrollHeight = 0;
+        for (let i = 0; i < currentScene; i++) {
+            prevScrollHeight += sceneInfo[i].scrollHeight;
+        }
+
+        if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+            // 스크롤이 다음의 장면으로 내려갈 때
+            currentScene++;
+        }
+
+        if (yOffset < prevScrollHeight) {
+            // 스크롤이 이전 장면으로 올라갈 때
+            if (currentScene === 0) return; // 일부 브라우저에서 바운스 효과를 사용할 때 스크롤이 음수가 될 수 있음.
+            currentScene--;
+        }
+
+        console.log(yOffset, currentScene);
+    }
 
     window.addEventListener('resize', setLayout);
     window.addEventListener('scroll', () => {
