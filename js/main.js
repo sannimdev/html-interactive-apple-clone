@@ -79,10 +79,23 @@
         document.body.setAttribute('id', `show-scene-${currentScene}`);
     }
 
+    function calcValues(values, currentYOffset) {
+        // 현재 씬에서 스크롤의 위치가 얼마나 됐는지의 비율을 구해야 할 필요가 있다. (CSS 적용)
+    }
+
     function playAnimation() {
+        const objs = sceneInfo[currentScene].objs;
+        const values = sceneInfo[currentScene].values;
+        const currentYOffset = yOffset - prevScrollHeight;
+        console.log(currentScene, '씬', currentYOffset, '오프셋');
+
         switch (currentScene) {
             case 0:
-                console.log('0 play');
+                // css
+                let messageA_opacity_0 = values.messageA_opacity[0];
+                let messageA_opacity_1 = values.messageA_opacity[1];
+                // console.log(messageA_opacity_0, messageA_opacity_1);
+                // console.log(calcValues(values, currentYOffset));
                 break;
             case 1:
                 console.log('1 play');
@@ -117,7 +130,7 @@
         playAnimation();
 
         document.body.setAttribute('id', `show-scene-${currentScene}`);
-        console.log(yOffset, currentScene);
+        // console.log(yOffset, currentScene);
     }
 
     window.addEventListener('scroll', () => {
