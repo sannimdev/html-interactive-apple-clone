@@ -80,22 +80,25 @@
     }
 
     function calcValues(values, currentYOffset) {
-        // 현재 씬에서 스크롤의 위치가 얼마나 됐는지의 비율을 구해야 할 필요가 있다. (CSS 적용)
+        // 현재 씬에서 스크롤의 위치가 어디쯤인지의 비율을 구해야 할 필요가 있다. (CSS 적용)
+        let rv;
+        let scrollRatio = currentYOffset / sceneInfo[currentScene].scrollHeight;
+
+        rv = scrollRatio * (values[1] - values[0]) + values[0];
+        return rv;
     }
 
     function playAnimation() {
         const objs = sceneInfo[currentScene].objs;
         const values = sceneInfo[currentScene].values;
         const currentYOffset = yOffset - prevScrollHeight;
-        console.log(currentScene, '씬', currentYOffset, '오프셋');
+        // console.log(currentScene, '씬', currentYOffset, '오프셋');
 
         switch (currentScene) {
             case 0:
                 // css
-                let messageA_opacity_0 = values.messageA_opacity[0];
-                let messageA_opacity_1 = values.messageA_opacity[1];
-                // console.log(messageA_opacity_0, messageA_opacity_1);
-                // console.log(calcValues(values, currentYOffset));
+                let messageA_opacity_in = calcValues(values.messageA_opacity, currentYOffset);
+                objs.messageA.style.opacity = messageA_opacity_in;
                 break;
             case 1:
                 console.log('1 play');
