@@ -7,6 +7,7 @@
     let yOffset = 0; // window.pageYOffset 대신 쓸 변수
     let prevScrollHeight = 0; // 현재 스크롤 위치(yOffset)보다 위쪽에 있는 스크롤 섹션들의 높잇값의 합
     let currentScene = 0; // 현재 활성화된 (눈 앞에 보이는) 씬(scroll-section)
+    let enterNewScene = false; // 새로운 scene이 시작되는 순간 true
 
     const sceneInfo = [
         // 스크롤 섹션별 객체를 만듦.
@@ -94,25 +95,26 @@
         const currentYOffset = yOffset - prevScrollHeight;
         // console.log(currentScene, '씬', currentYOffset, '오프셋');
 
+        console.log(currentScene);
+
         switch (currentScene) {
             case 0:
                 // css
                 let messageA_opacity_in = calcValues(values.messageA_opacity, currentYOffset);
                 objs.messageA.style.opacity = messageA_opacity_in;
+                console.log(messageA_opacity_in);
                 break;
             case 1:
-                console.log('1 play');
                 break;
             case 2:
-                console.log('2 play');
                 break;
             case 3:
-                console.log('3 play');
                 break;
         }
     }
 
     function scrollLoop() {
+        enterNewScene = false;
         prevScrollHeight = 0;
         for (let i = 0; i < currentScene; i++) {
             prevScrollHeight += sceneInfo[i].scrollHeight;
@@ -120,19 +122,24 @@
 
         if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
             // 스크롤이 다음의 장면으로 내려갈 때
+            enterNewScene = true;
             currentScene++;
+            document.body.setAttribute('id', `show-scene-${currentScene}`);
         }
 
         if (yOffset < prevScrollHeight) {
             // 스크롤이 이전 장면으로 올라갈 때
+            enterNewScene = true;
             if (currentScene === 0) return; // 일부 브라우저에서 바운스 효과를 사용할 때 스크롤이 음수가 될 수 있음.
             currentScene--;
+            document.body.setAttribute('id', `show-scene-${currentScene}`);
         }
+
+        if (enterNewScene) return;
 
         // 애니메이션 처리
         playAnimation();
 
-        document.body.setAttribute('id', `show-scene-${currentScene}`);
         // console.log(yOffset, currentScene);
     }
 
