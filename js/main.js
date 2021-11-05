@@ -25,7 +25,8 @@
                 messageD: document.querySelector('#scroll-section-0 .main-message.d'),
             },
             values: {
-                messageA_opacity: [0, 1],
+                messageA_opacity: [0, 1, { start: 0.1, end: 0.2 }],
+                messageB_opacity: [0, 1, { start: 0.3, end: 0.4 }],
             },
         },
         {
@@ -83,9 +84,28 @@
     function calcValues(values, currentYOffset) {
         // 현재 씬에서 스크롤의 위치가 어디쯤인지의 비율을 구해야 할 필요가 있다. (CSS 적용)
         let rv;
-        let scrollRatio = currentYOffset / sceneInfo[currentScene].scrollHeight;
+        const scrollHeight = sceneInfo[currentScene].scrollHeight;
+        const scrollRatio = currentYOffset / scrollHeight;
 
-        rv = scrollRatio * (values[1] - values[0]) + values[0];
+        if (values.length === 3) {
+            // start ~ end 사이에 애니메이션 실행하기
+            const partScrollStart = values[2].start * scrollHeight;
+            const partScrollEnd = values[2].end * scrollHeight;
+            const partScrollHeight = partScrollEnd - partScrollStart;
+
+            if (currentYOffset >= partScrollStart && currentYOffset <= partScrollEnd) {
+                rv =
+                    ((currentYOffset - partScrollStart) / partScrollHeight) *
+                        (values[1] - values[0]) +
+                    values[0];
+            } else if (currentYOffset < partScrollStart) {
+                rv = values[0];
+            } else if (currentYOffset > partScrollEnd) {
+                rv = values[1];
+            }
+        } else {
+            rv = scrollRatio * (values[1] - values[0]) + values[0];
+        }
         return rv;
     }
 
@@ -95,7 +115,7 @@
         const currentYOffset = yOffset - prevScrollHeight;
         // console.log(currentScene, '씬', currentYOffset, '오프셋');
 
-        console.log(currentScene);
+        // console.log(currentScene);
 
         switch (currentScene) {
             case 0:
