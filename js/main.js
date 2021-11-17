@@ -69,8 +69,15 @@
                 messageC: document.querySelector('#scroll-section-2 .c'),
                 pinB: document.querySelector('#scroll-section-2 .b .pin'),
                 pinC: document.querySelector('#scroll-section-2 .c .pin'),
+                canvas: document.querySelector('#video-canvas-1'),
+                context: document.querySelector('#video-canvas-1').getContext('2d'),
+                videoImages: [],
             },
             values: {
+                videoImageCount: 300,
+                imageSequence: [0, 299],
+                canvas_opacity_in: [0, 1, { start: 0, end: 0.1 }],
+                canvas_opacity_out: [1, 0, { start: 0.95, end: 1 }],
                 messageA_translateY_in: [20, 0, { start: 0.15, end: 0.2 }],
                 messageB_translateY_in: [30, 0, { start: 0.5, end: 0.55 }],
                 messageC_translateY_in: [30, 0, { start: 0.72, end: 0.77 }],
@@ -111,6 +118,13 @@
             imgElem.src = `./examples/apple-clone-v10/video/001/IMG_${6726 + i}.JPG`;
             sceneInfo[0].objs.videoImages.push(imgElem);
         }
+
+        let imgElem2;
+        for (let i = 0; i < sceneInfo[2].values.videoImageCount; i++) {
+            imgElem = new Image();
+            imgElem.src = `./examples/apple-clone-v10/video/002/IMG_${7027 + i}.JPG`;
+            sceneInfo[2].objs.videoImages.push(imgElem);
+        }
     }
     setCanvasImages();
 
@@ -139,6 +153,7 @@
 
         const heightRatio = window.innerHeight / 1080;
         sceneInfo[0].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
+        sceneInfo[2].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
     }
 
     function calcValues(values, currentYOffset) {
@@ -273,6 +288,23 @@
                 break;
 
             case 2:
+                let sequence2 = Math.round(calcValues(values.imageSequence, currentYOffset));
+                objs.context.drawImage(objs.videoImages[sequence2], 0, 0);
+
+                if (scrollRatio <= 0.5) {
+                    //in
+                    objs.canvas.style.opacity = calcValues(
+                        values.canvas_opacity_in,
+                        currentYOffset
+                    );
+                } else {
+                    //out
+                    objs.canvas.style.opacity = calcValues(
+                        values.canvas_opacity_out,
+                        currentYOffset
+                    );
+                }
+
                 // console.log('2 play');
                 if (scrollRatio <= 0.25) {
                     // in
@@ -405,6 +437,7 @@
     window.addEventListener('load', () => {
         setLayout();
         sceneInfo[0].objs.context.drawImage(sceneInfo[0].objs.videoImages[0], 0, 0);
+        sceneInfo[2].objs.context.drawImage(sceneInfo[2].objs.videoImages[0], 0, 0);
     });
     window.addEventListener('resize', setLayout);
 })();

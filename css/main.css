@@ -225,6 +225,7 @@ a {
 
     .desc-message {
         width: 20%;
+        opacity: 0;
     }
 
     #scroll-section-2 .b {
