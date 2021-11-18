@@ -106,6 +106,13 @@
             objs: {
                 container: document.querySelector('#scroll-section-3'),
                 canvasCaption: document.querySelector('.canvas-caption'),
+                canvas: document.querySelector('.image-blend-canvas'),
+                context: document.querySelector('.image-blend-canvas').getContext('2d'),
+                imagesPath: [
+                    './examples/apple-clone-v10/images/blend-image-1.jpg',
+                    './examples/apple-clone-v10/images/blend-image-2.jpg',
+                ],
+                images: [],
             },
             values: {},
         },
@@ -121,10 +128,18 @@
 
         let imgElem2;
         for (let i = 0; i < sceneInfo[2].values.videoImageCount; i++) {
-            imgElem = new Image();
-            imgElem.src = `./examples/apple-clone-v10/video/002/IMG_${7027 + i}.JPG`;
-            sceneInfo[2].objs.videoImages.push(imgElem);
+            imgElem2 = new Image();
+            imgElem2.src = `./examples/apple-clone-v10/video/002/IMG_${7027 + i}.JPG`;
+            sceneInfo[2].objs.videoImages.push(imgElem2);
         }
+
+        let imgElem3;
+        for (let i = 0; i < sceneInfo[3].objs.imagesPath.length; i++) {
+            imgElem3 = new Image();
+            imgElem3.src = sceneInfo[3].objs.imagesPath[i];
+            sceneInfo[3].objs.images.push(imgElem3);
+        }
+        console.log(sceneInfo[3].objs.images);
     }
     setCanvasImages();
 
@@ -392,11 +407,30 @@
 
             case 3:
                 // console.log('3 play');
+                // 가로/세로 모두 꽉 차게 하기
+
+                const widthRatio = window.innerWidth / objs.canvas.width;
+                const heightRatio = window.innerHeight / objs.canvas.height;
+                console.log(widthRatio, heightRatio);
+                let canvasScaleRatio;
+
+                if (widthRatio <= heightRatio) {
+                    // 캔버스보다 브라우저 창이 홀쭉한 경우
+                    canvasScaleRatio = heightRatio;
+                } else {
+                    // 캔버스보다 브라우저 창이 납작한 경우
+                    canvasScaleRatio = widthRatio;
+                }
+
+                objs.canvas.style.transform = `scale(${canvasScaleRatio})`;
+                objs.context.drawImage(objs.images[0], 0, 0);
+
                 break;
         }
     }
 
     function scrollLoop() {
+        if (currentScene > 3) return; // 일단 버그 임시로 해결하기
         enterNewScene = false;
         prevScrollHeight = 0;
         for (let i = 0; i < currentScene; i++) {
