@@ -194,8 +194,10 @@ a {
     left: 50%;
 }
 
-.image-blend-canvas {
-    border: 1px solid blue;
+.image-blend-canvas.sticky {
+    position: fixed;
+    /* top: 0; => scale 비율에 따라 탄력적인 조정이 필요하다. */
+    /* border: 1px solid blue; */
 }
 
 #scroll-section-3 {
