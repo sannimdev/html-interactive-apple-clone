@@ -456,7 +456,6 @@
             case 3:
                 // console.log('3 play');
                 // 가로/세로 모두 꽉 차게 하기
-                let step = 0;
 
                 const widthRatio = window.innerWidth / objs.canvas.width;
                 const heightRatio = window.innerHeight / objs.canvas.height;
@@ -545,15 +544,26 @@
                     if (scrollRatio > values.blendHeight[2].end) {
                         // console.log('블렌드 스크롤 끝');
                         values.canvas_scale[0] = canvasScaleRatio;
-                        values.canvas_scale[1] = document.body.offsetWidth / objs.canvas.width;
+                        values.canvas_scale[1] =
+                            document.body.offsetWidth / (1.5 * objs.canvas.width);
                         values.canvas_scale[2].start = values.blendHeight[2].end;
                         values.canvas_scale[2].end = values.canvas_scale[2].start + 0.2;
-                        console.log(values.canvas_scale);
 
                         objs.canvas.style.transform = `scale(${calcValues(
                             values.canvas_scale,
                             currentYOffset
                         )})`;
+
+                        objs.canvas.style.marginTop = 0;
+                    }
+
+                    if (
+                        scrollRatio > values.canvas_scale[2].end &&
+                        values.canvas_scale[2].end > 0
+                    ) {
+                        console.log('스크롤 시작');
+                        objs.canvas.classList.remove('sticky');
+                        objs.canvas.style.marginTop = `${scrollHeight * 0.4}px`;
                     }
                 }
 
