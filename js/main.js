@@ -150,6 +150,14 @@
     }
     setCanvasImages();
 
+    function checkMenu() {
+        if (yOffset > 44) {
+            document.body.classList.add('local-nav-sticky');
+        } else {
+            document.body.classList.remove('local-nav-sticky');
+        }
+    }
+
     function setLayout() {
         // STEP1. 각 스크롤 섹션의 높이 설정하기
         for (let i = 0; i < sceneInfo.length; i++) {
@@ -623,6 +631,7 @@
     window.addEventListener('scroll', () => {
         yOffset = window.pageYOffset;
         scrollLoop();
+        checkMenu();
     });
     /*
         DOMContentLoaded: DOM의 구성 작업이 완료되었을 때
