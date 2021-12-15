@@ -8,6 +8,11 @@
     let prevScrollHeight = 0; // 현재 스크롤 위치(yOffset)보다 위쪽에 있는 스크롤 섹션들의 높잇값의 합
     let currentScene = 0; // 현재 활성화된 (눈 앞에 보이는) 씬(scroll-section)
     let enterNewScene = false; // 새로운 scene이 시작되는 순간 true
+    // 동영상 부드럽게 처리하기 위한 변수
+    let acc = 0.1;
+    let delayedYOffset = 0;
+    let rafId;
+    let rafState;
 
     const sceneInfo = [
         {
@@ -223,8 +228,8 @@
 
         switch (currentScene) {
             case 0:
-                let sequence = Math.round(calcValues(values.imageSequence, currentYOffset));
-                objs.context.drawImage(objs.videoImages[sequence], 0, 0);
+                // let sequence = Math.round(calcValues(values.imageSequence, currentYOffset));
+                // objs.context.drawImage(objs.videoImages[sequence], 0, 0);
                 objs.canvas.style.opacity = calcValues(values.canvas_opacity, currentYOffset);
 
                 if (scrollRatio <= 0.22) {
@@ -605,14 +610,14 @@
             prevScrollHeight += sceneInfo[i].scrollHeight;
         }
 
-        if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+        if (delayedYOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
             // 스크롤이 다음의 장면으로 내려갈 때
             enterNewScene = true;
             currentScene++;
             document.body.setAttribute('id', `show-scene-${currentScene}`);
         }
 
-        if (yOffset < prevScrollHeight) {
+        if (delayedYOffset < prevScrollHeight) {
             // 스크롤이 이전 장면으로 올라갈 때
             enterNewScene = true;
             if (currentScene === 0) return; // 일부 브라우저에서 바운스 효과를 사용할 때 스크롤이 음수가 될 수 있음.
@@ -632,7 +637,35 @@
         yOffset = window.pageYOffset;
         scrollLoop();
         checkMenu();
+
+        if (!rafState) {
+            rafId = requestAnimationFrame(loop);
+            rafState = true;
+        }
     });
+
+    function loop() {
+        delayedYOffset = delayedYOffset + (yOffset - delayedYOffset) * acc;
+
+        if (!enterNewScene) {
+            if ([0, 2].includes(currentScene)) {
+                const currentYOffset = delayedYOffset - prevScrollHeight;
+                const objs = sceneInfo[currentScene].objs;
+                const values = sceneInfo[currentScene].values;
+                let sequence = Math.round(calcValues(values.imageSequence, currentYOffset) || 0);
+                if (objs.videoImages[sequence]) {
+                    objs.context.drawImage(objs.videoImages[sequence], 0, 0);
+                }
+            }
+        }
+
+        rafId = requestAnimationFrame(loop);
+        if (Math.abs(yOffset - delayedYOffset) < 1) {
+            cancelAnimationFrame(rafId);
+            rafState = false;
+        }
+    }
+    loop();
     /*
         DOMContentLoaded: DOM의 구성 작업이 완료되었을 때
         load는 웹페이지의 리소스까지 전부 로드되었을 때 
