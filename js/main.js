@@ -670,6 +670,7 @@
         load는 웹페이지의 리소스까지 전부 로드되었을 때 
     */
     window.addEventListener('load', () => {
+        document.body.classList.remove('before-load');
         setLayout();
         sceneInfo[0].objs.context.drawImage(sceneInfo[0].objs.videoImages[0], 0, 0);
         sceneInfo[2].objs.context.drawImage(sceneInfo[2].objs.videoImages[0], 0, 0);
@@ -682,4 +683,8 @@
     });
     window.addEventListener('orientationchange', setLayout);
     setCanvasImages();
+
+    document.querySelector('.loading').addEventListener('transitionend', (e) => {
+        document.body.removeChild(e.currentTarget);
+    });
 })();
