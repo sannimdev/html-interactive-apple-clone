@@ -664,6 +664,20 @@
         sceneInfo[0].objs.context.drawImage(sceneInfo[0].objs.videoImages[0], 0, 0);
         sceneInfo[2].objs.context.drawImage(sceneInfo[2].objs.videoImages[0], 0, 0);
 
+        let tempYOffset = yOffset;
+        let tempScrollCount = 0;
+
+        if (yOffset > 0) {
+            let siId = setInterval(() => {
+                window.scrollTo(0, tempYOffset);
+                tempYOffset += 5;
+
+                if (tempScrollCount++ > 20) {
+                    clearInterval(siId);
+                }
+            }, 20);
+        }
+
         window.addEventListener('scroll', () => {
             yOffset = window.pageYOffset;
             scrollLoop();
