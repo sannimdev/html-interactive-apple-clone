@@ -695,7 +695,9 @@
             }
         });
         window.addEventListener('orientationchange', () => {
-            setTimeout(setLayout, 500);
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
         });
     });
 
