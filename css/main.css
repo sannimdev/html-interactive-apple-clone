@@ -190,6 +190,10 @@ body.before-load {
     will-change: transform, opacity;
 }
 
+.scroll-effect-end .sticky-elem {
+    display: none !important;
+}
+
 .sticky-elem {
     display: none;
     position: fixed;
@@ -245,6 +249,10 @@ body.before-load {
 .container {
     /* iphone 가로 스클로 방지 */
     overflow-x: hidden;
+}
+
+.normal-content {
+    margin-bottom: 10rem;
 }
 
 @keyframes loading-spin {
